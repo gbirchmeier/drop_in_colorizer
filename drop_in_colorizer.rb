@@ -1,17 +1,23 @@
+#
+# This original version of this file came from
+# https://github.com/gbirchmeier/drop_in_colorizer
+#
+
+#
 # MIT License
-# 
+#
 # Copyright (c) 2019 Grant Birchmeier
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -21,6 +27,7 @@
 # SOFTWARE.
 
 module DropInColorizer
+  # The main (only) class in DropInColorizer.
   class Dic
     @enabled = true # this is a _class_ instance variable
 
@@ -50,25 +57,21 @@ module DropInColorizer
       @bgcolorcode = nil
     end
 
-    def err(str)
-      puts "DropInColorizer error: #{str}"
+    def initialize_copy(other)
+      super
     end
 
-    def to_s
-      return @str unless self.class.enabled?
-      sb = StringIO.new
-      sb << "\e[1m" if @bold
-      sb << "\e[2m" if @dim
-      sb << "\e[4m" if @underline
-      sb << "\e[5m" if @blink
-      sb << "\e[7m" if @invert
-      sb << "\e[8m" if @conceal
-      sb << "\e[#{@colorcode}m" unless @colorcode.nil?
-      sb << "\e[#{@bgcolorcode}m" unless @bgcolorcode.nil?
-      (sb.length < 1) ? @str : "#{sb.string}#{@str}\e[0m"
+    def replace_text(txt)
+      @str = txt
+      self
     end
 
-    # rubocop:disable Style/SingleLineMethods, Layout/EmptyLineBetweenDefs, Style/Semicolon
+    def plain
+      @bold = @dim = @underline = @blink = @invert = @conceal = false
+      self
+    end
+
+    # rubocop:disable Style/SingleLineMethods, Layout/EmptyLineBetweenDefs, Style/Semicolon, Metrics/LineLength
     def bold;      @bold = true;      self; end
     def dim;       @dim = true;       self; end
     def underline; @underline = true; self; end
@@ -93,7 +96,24 @@ module DropInColorizer
     def bg_magenta; @bgcolorcode = 45; self; end
     def bg_cyan;    @bgcolorcode = 46; self; end
     def bg_white;   @bgcolorcode = 47; self; end
-    # rubocop:enable Style/SingleLineMethods, Layout/EmptyLineBetweenDefs, Style/Semicolon
 
+    def reset_fg; @colorcode = nil;   self; end
+    def reset_bg; @bgcolorcode = nil; self; end
+    # rubocop:enable Style/SingleLineMethods, Layout/EmptyLineBetweenDefs, Style/Semicolon, Metrics/LineLength
+
+    # Returns a string with appropriate terminal color/style codes
+    def to_s # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity, Metrics/LineLength
+      return @str unless self.class.enabled?
+      sb = StringIO.new
+      sb << "\e[1m" if @bold
+      sb << "\e[2m" if @dim
+      sb << "\e[4m" if @underline
+      sb << "\e[5m" if @blink
+      sb << "\e[7m" if @invert
+      sb << "\e[8m" if @conceal
+      sb << "\e[#{@colorcode}m" unless @colorcode.nil?
+      sb << "\e[#{@bgcolorcode}m" unless @bgcolorcode.nil?
+      (sb.length < 1) ? @str : "#{sb.string}#{@str}\e[0m" # rubocop:disable Style/TernaryParentheses, Style/ZeroLengthPredicate, Metrics/LineLength
+    end
   end
 end
