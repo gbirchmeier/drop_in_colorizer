@@ -97,6 +97,24 @@ module DropInColorizer
     def bg_cyan;    @bgcolorcode = 46; self; end
     def bg_white;   @bgcolorcode = 47; self; end
 
+    def bright_black;   @colorcode = 90; self; end
+    def bright_red;     @colorcode = 91; self; end
+    def bright_green;   @colorcode = 92; self; end
+    def bright_yellow;  @colorcode = 93; self; end
+    def bright_blue;    @colorcode = 94; self; end
+    def bright_magenta; @colorcode = 95; self; end
+    def bright_cyan;    @colorcode = 96; self; end
+    def bright_white;   @colorcode = 97; self; end
+
+    def bright_bg_black;   @bgcolorcode = 100; self; end
+    def bright_bg_red;     @bgcolorcode = 101; self; end
+    def bright_bg_green;   @bgcolorcode = 102; self; end
+    def bright_bg_yellow;  @bgcolorcode = 103; self; end
+    def bright_bg_blue;    @bgcolorcode = 104; self; end
+    def bright_bg_magenta; @bgcolorcode = 105; self; end
+    def bright_bg_cyan;    @bgcolorcode = 106; self; end
+    def bright_bg_white;   @bgcolorcode = 107; self; end
+
     def reset_fg; @colorcode = nil;   self; end
     def reset_bg; @bgcolorcode = nil; self; end
     # rubocop:enable Style/SingleLineMethods, Layout/EmptyLineBetweenDefs, Style/Semicolon, Metrics/LineLength
